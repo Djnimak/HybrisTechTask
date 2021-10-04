@@ -37,6 +37,9 @@ CREATE TABLE IF NOT EXISTS `orders_has_products` (
                                                                     ON DELETE CASCADE
                                                                     ON UPDATE CASCADE);
 
+DELETE FROM products;
+DELETE FROM orders;
+DELETE FROM orders_has_products;
 INSERT INTO products (id, name, price, created_at, product_status) VALUES(DEFAULT, 'Mouse', 44, now(), 'in_stock');
 INSERT INTO products (id, name, price, created_at, product_status) VALUES(DEFAULT, 'Monitor', 2000, now(), 'in_stock');
 INSERT INTO products (id, name, price, created_at, product_status) VALUES(DEFAULT, 'Keyboard', 254, now(), 'in_stock');

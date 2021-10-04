@@ -13,31 +13,12 @@ import java.util.*;
 
 public class Demo {
 
-    public static void main(String[] args) throws SQLException, FileNotFoundException {
-
-
-//        createOrder();
-
-//        allProducts(dbManager);
-
-//        orderedProducts(dbManager);
-
-//        orderByID(dbManager);
-
-//        allOrders(dbManager);
-
-
-    }
-
     public static int createOrder(DBManager dbManager, List<Integer> productIDs, List<Integer> productQuantity) throws SQLException, FileNotFoundException {
         Order order = Order.createOrder();
         Map<Integer, Integer> products = new HashMap<>();
         for (int i = 0; i < productIDs.size(); i++) {
             products.merge(productIDs.get(i), productQuantity.get(i), Integer::sum);
         }
-//        for (Integer integer : productIDs) {
-//            addProduct(products, integer);
-//        }
         order.setProducts(products);
         return dbManager.createOrder(order, products);
     }
@@ -205,10 +186,6 @@ public class Demo {
             System.out.println(" | " + productQuantity.get(i) + " |");
         }
     }
-
-//    public static void addProduct(Map<Integer, Integer> map, int productId) {
-//        map.merge(productId, 1, Integer::sum);
-//    }
 
     public static void updateProductQuantity (DBManager dbManager, int orderId, int productId, int quantity) throws SQLException, FileNotFoundException {
         dbManager.updateProductQuantityInOrder(quantity, orderId, productId);

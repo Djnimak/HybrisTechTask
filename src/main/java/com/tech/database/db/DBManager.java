@@ -339,4 +339,26 @@ public class DBManager {
         }
     }
 
+    public Product getProductByName(String name) throws SQLException, FileNotFoundException {
+        ResultSet rs = null;
+        Product product = null;
+        connection = getConnection();
+        try (PreparedStatement ps = connection.prepareStatement(SqlConstance.PRODUCT_BY_NAME)){
+            ps.setString(1, name);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                product = new Product();
+                product.setId(rs.getInt("id"));
+                product.setName(rs.getString("name"));
+                product.setPrice(rs.getInt("price"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(rs);
+            connection.close();
+        }
+        return product;
+    }
+
 }
