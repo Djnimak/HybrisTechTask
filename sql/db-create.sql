@@ -4,7 +4,7 @@ USE HybrisTechTask;
 USE HybrisTechTask;
 
 CREATE TABLE IF NOT EXISTS `orders` (
-                                               `id` INT NOT NULL AUTO_INCREMENT,
+                                                   `id` INT NOT NULL AUTO_INCREMENT,
                                                `user_id` INT NOT NULL,
                                                `order_status` ENUM('created', 'in_progress', 'delivered') NOT NULL,
                                                `created_at` VARCHAR(45) NOT NULL,

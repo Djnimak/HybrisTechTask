@@ -2,11 +2,9 @@ package com.tech.database.db;
 
 import com.tech.database.SqlConstance;
 import com.tech.database.db.Entity.Order;
-import com.tech.database.db.Entity.OrderStatus;
 import com.tech.database.db.Entity.Product;
 import com.tech.database.db.Entity.ProductStatus;
 
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,19 +23,18 @@ public class DBManager {
         return dbManager;
     }
 
-    public Connection getConnection() throws SQLException, FileNotFoundException {
+    public Connection getConnection() throws SQLException {
         List<String> list = getProperty();
         connection = DriverManager.getConnection(list.get(0), list.get(1), list.get(2));
         return connection;
     }
 
-    public static List<String> getProperty() throws FileNotFoundException {
+    public static List<String> getProperty() {
         String connectionURL = "";
         String username = "";
         String password = "";
-        try {
+        try (FileReader reader = new FileReader("local.properties")) {
             Properties properties = new Properties();
-            FileReader reader = new FileReader("local.properties");
             properties.load(reader);
             connectionURL = properties.getProperty("connection.url");
             username = properties.getProperty("username");
@@ -52,7 +49,7 @@ public class DBManager {
         return list;
     }
 
-    public void createProduct(Product product) throws SQLException, FileNotFoundException {
+    public void createProduct(Product product) throws SQLException {
         ResultSet rs = null;
         connection = getConnection();
         try (PreparedStatement ps = connection.prepareStatement(SqlConstance.CREATE_PRODUCT, Statement.RETURN_GENERATED_KEYS)) {
@@ -75,7 +72,7 @@ public class DBManager {
         }
     }
 
-    public int createOrder(Order order, Map<Integer, Integer> products) throws SQLException, FileNotFoundException {
+    public int createOrder(Order order, Map<Integer, Integer> products) throws SQLException {
         ResultSet rs = null;
         connection = getConnection();
         int orderId = 0;
@@ -120,7 +117,7 @@ public class DBManager {
         return orderId;
     }
 
-    public List<Product> findAllProducts() throws SQLException, FileNotFoundException {
+    public List<Product> findAllProducts() throws SQLException {
         ResultSet rs = null;
         connection = getConnection();
         List<Product> products = new LinkedList<>();
@@ -143,7 +140,7 @@ public class DBManager {
         return products;
     }
 
-    public List<Product> allProductsWithID() throws SQLException, FileNotFoundException {
+    public List<Product> allProductsWithID() throws SQLException {
         ResultSet rs = null;
         connection = getConnection();
         List<Product> products = new LinkedList<>();
@@ -166,7 +163,7 @@ public class DBManager {
         return products;
     }
 
-    public Map<Product, Integer> finaAllOrderedProducts() throws SQLException, FileNotFoundException {
+    public Map<Product, Integer> finaAllOrderedProducts() throws SQLException {
         ResultSet rs = null;
         connection = getConnection();
         Map<Product, Integer> products = new LinkedHashMap<>();
@@ -189,7 +186,7 @@ public class DBManager {
         return products;
     }
 
-    public Map<Map<Product, Order>, Map<Integer, Integer>> findOrderById(int id) throws SQLException, FileNotFoundException {
+    public Map<Map<Product, Order>, Map<Integer, Integer>> findOrderById(int id) throws SQLException {
         ResultSet rs = null;
         connection = getConnection();
         Map<Map<Product, Order>, Map<Integer, Integer>> map = new LinkedHashMap<>();
@@ -220,7 +217,7 @@ public class DBManager {
         return map;
     }
 
-    public Map<Map<Map<Integer,Product>, Map<Integer,Order>>, Map<Integer, Integer>> findAllOrders() throws SQLException, FileNotFoundException {
+    public Map<Map<Map<Integer,Product>, Map<Integer,Order>>, Map<Integer, Integer>> findAllOrders() throws SQLException {
         ResultSet rs = null;
         connection = getConnection();
         Map<Map<Map<Integer,Product>, Map<Integer,Order>>, Map<Integer, Integer>> map = new LinkedHashMap<>();
@@ -256,7 +253,7 @@ public class DBManager {
         return map;
     }
 
-    public void updateProductQuantityInOrder(int quantity, int orderId, int productId) throws SQLException, FileNotFoundException {
+    public void updateProductQuantityInOrder(int quantity, int orderId, int productId) throws SQLException {
         connection = getConnection();
         try (PreparedStatement ps = connection.prepareStatement(SqlConstance.UPDATE_PRODUCT_QUANTITY_BY_ORDER_ID)) {
             ps.setInt(1, quantity);
@@ -270,7 +267,7 @@ public class DBManager {
         }
     }
 
-    public void deleteProductById (int id) throws SQLException, FileNotFoundException {
+    public void deleteProductById (int id) throws SQLException {
         connection = getConnection();
         try (PreparedStatement ps = connection.prepareStatement(SqlConstance.DELETE_PRODUCT)) {
             ps.setInt(1, id);
@@ -282,7 +279,7 @@ public class DBManager {
         }
     }
 
-    public void deleteProducts () throws SQLException, FileNotFoundException {
+    public void deleteProducts () throws SQLException {
         connection = getConnection();
         try (PreparedStatement ps = connection.prepareStatement(SqlConstance.DELETE_PRODUCTS)){
             ps.executeUpdate();
@@ -321,7 +318,7 @@ public class DBManager {
         }
     }
 
-    public void executeScript(InputStream in) throws SQLException, FileNotFoundException {
+    public void executeScript(InputStream in) throws SQLException {
         connection = getConnection();
         Scanner s = new Scanner(in, "UTF-8");
         s.useDelimiter("/\\*[\\s\\S]*?\\*/|--[^\\r\\n]*|;");
@@ -339,7 +336,7 @@ public class DBManager {
         }
     }
 
-    public Product getProductByName(String name) throws SQLException, FileNotFoundException {
+    public Product getProductByName(String name) throws SQLException {
         ResultSet rs = null;
         Product product = null;
         connection = getConnection();
